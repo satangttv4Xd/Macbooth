@@ -1,11 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import { LeaderboardEntry, BoothStats, AdminSettings, PlayerSession } from './types.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DB_DIR = path.resolve(__dirname, '../../database');
+const DB_DIR = path.resolve(process.cwd(), 'database');
 const DB_FILE = path.join(DB_DIR, 'macdefender_db.json');
 
 interface DatabaseSchema {
@@ -96,17 +93,6 @@ const INITIAL_LEADERBOARD: LeaderboardEntry[] = [
     difficulty: 'easy',
     completedAt: new Date(Date.now() - 3600000 * 10).toISOString(),
   },
-  {
-    id: 'seed-7',
-    nickname: 'TERMINAL_01',
-    score: 6420,
-    rank: 'B',
-    timeFormatted: '05:12',
-    timeSeconds: 312,
-    threatsBlocked: 3,
-    difficulty: 'normal',
-    completedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-  }
 ];
 
 class StorageEngine {

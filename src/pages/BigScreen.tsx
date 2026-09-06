@@ -4,6 +4,10 @@ import { PlayerSession, LeaderboardEntry } from '../types/game.js';
 import { socketService } from '../services/socketService.js';
 import { soundEngine } from '../services/soundEngine.js';
 import { AppleLogo } from '../components/ui/AppleLogo.js';
+import {
+  fetchSupabaseLeaderboard,
+  subscribeToSupabaseLeaderboard,
+} from '../services/supabase.js';
 
 interface LogEvent {
   type: string;
@@ -41,15 +45,18 @@ export const BigScreen: React.FC<{ onBack: () => void }> = ({ onBack }) => {
     s?.on('soc:leaderboard_updated', handleLeaderboardUpdate);
     s?.on('soc:event_log', handleEventLog);
 
-    // Initial fetch of leaderboard
-    fetch('/api/leaderboard?limit=10')
-      .then(r => r.json())
-      .then(d => {
-        if (d.success) setLeaderboard(d.leaderboard);
-      })
-      .catch(() => {});
+    // Initial fetch of leaderboard from Supabase / local
+    const loadLeaderboard = () => {
+      fetchSupabaseLeaderboard(10).then(({ entries }) => {
+        if (entries.length > 0) setLeaderboard(entries);
+      }).catch(() => {});
+    };
+
+    loadLeaderboard();
+    const unsubscribeSupabase = subscribeToSupabaseLeaderboard(loadLeaderboard);
 
     return () => {
+      unsubscribeSupabase();
       s?.off('soc:active_players', handlePlayersUpdate);
       s?.off('soc:leaderboard_updated', handleLeaderboardUpdate);
       s?.off('soc:event_log', handleEventLog);

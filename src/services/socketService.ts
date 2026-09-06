@@ -5,9 +5,8 @@ class SocketService {
   private serverUrl: string;
 
   constructor() {
-    // If running in development with Vite proxy or production
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    this.serverUrl = isLocalhost ? 'http://localhost:3001' : `http://${window.location.hostname}:3001`;
+    // Same origin port 5173 (unified backend and frontend)
+    this.serverUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
   }
 
   public connect(): Socket {

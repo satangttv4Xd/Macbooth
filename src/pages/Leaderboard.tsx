@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, ArrowLeft, Search, RefreshCw, Play } from 'lucide-react';
+import { Trophy, ArrowLeft, Search, RefreshCw, Play, Radio, Database } from 'lucide-react';
 import { LeaderboardEntry } from '../types/game.js';
 import { soundEngine } from '../services/soundEngine.js';
 import { socketService } from '../services/socketService.js';
+import {
+  fetchSupabaseLeaderboard,
+  subscribeToSupabaseLeaderboard,
+  isSupabaseConfigured,
+} from '../services/supabase.js';
 
 interface LeaderboardProps {
   onBack: () => void;
@@ -14,31 +19,40 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack, onPlayNow }) =
   const [filterDifficulty, setFilterDifficulty] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [isSupabaseLive, setIsSupabaseLive] = useState(false);
 
-  const fetchLeaderboard = () => {
+  const fetchLeaderboard = async () => {
     setLoading(true);
-    fetch('/api/leaderboard?limit=50')
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          setEntries(data.leaderboard);
-        }
-      })
-      .catch(err => console.warn('Leaderboard fetch error:', err))
-      .finally(() => setLoading(false));
+    try {
+      const { entries: data, isRealSupabase } = await fetchSupabaseLeaderboard(50);
+      setEntries(data);
+      setIsSupabaseLive(isRealSupabase);
+    } catch (err) {
+      console.warn('Leaderboard fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchLeaderboard();
 
-    // Listen to real-time socket updates
+    // ⚡ Listen to Supabase Realtime updates
+    const unsubscribeSupabase = subscribeToSupabaseLeaderboard(() => {
+      fetchLeaderboard();
+    });
+
+    // Also listen to local socket updates as fallback
     const s = socketService.getSocket();
     const handleUpdate = (updatedList: LeaderboardEntry[]) => {
-      setEntries(updatedList);
+      if (!isSupabaseConfigured()) {
+        setEntries(updatedList);
+      }
     };
 
     s?.on('soc:leaderboard_updated', handleUpdate);
     return () => {
+      unsubscribeSupabase();
       s?.off('soc:leaderboard_updated', handleUpdate);
     };
   }, []);
@@ -93,9 +107,25 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack, onPlayNow }) =
                   ตารางอันดับยอดนักปกป้อง MAC (LEADERBOARD)
                 </h1>
               </div>
-              <p className="text-xs text-apple-gray-400">
-                Hall of Fame ประจำบูธ • อัปเดตแบบเรียลไทม์สด
-              </p>
+              <div className="flex flex-wrap items-center gap-2 mt-1">
+                <p className="text-xs text-apple-gray-400">
+                  Hall of Fame ประจำบูธ • อัปเดตแบบเรียลไทม์สด
+                </p>
+                {isSupabaseLive ? (
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-mono shadow-glow-green">
+                    <Radio className="w-3 h-3 animate-pulse text-emerald-400" />
+                    SUPABASE REALTIME LIVE
+                  </span>
+                ) : (
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30 font-mono"
+                    title="ใส่ db_url และ anon ใน .env เพื่อเชื่อมต่อฐานข้อมูล Supabase จริง"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                    LOCAL DB (STANDBY)
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -124,13 +154,25 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack, onPlayNow }) =
           </div>
         </div>
 
+        {/* Configuration Notice if not connected to Supabase */}
+        {!isSupabaseConfigured() && (
+          <div className="bg-amber-950/20 border border-amber-500/30 rounded-xl p-3 flex items-center justify-between text-xs text-amber-300/90 font-sans backdrop-blur">
+            <div className="flex items-center gap-2.5">
+              <Database className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>
+                <strong>สถานะ Supabase:</strong> กำลังใช้ฐานข้อมูลภายในเครื่อง หากต้องการเชื่อมต่อ Supabase จริง ให้ใส่ <code className="bg-black/50 px-1.5 py-0.5 rounded text-amber-200 font-mono font-bold">db_url</code> และ <code className="bg-black/50 px-1.5 py-0.5 rounded text-amber-200 font-mono font-bold">anon</code> ในไฟล์ <code className="bg-black/50 px-1.5 py-0.5 rounded text-amber-200 font-mono font-bold">.env</code>
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Filter & Search Bar */}
         <div className="flex flex-col sm:flex-row gap-3 font-sans">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-apple-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="ค้นหาชื่อฉายาผู้เล่น..."
+              placeholder="ค้นหาชื่อเรียกขาน / ฉายาผู้เล่น..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#07090e] border border-white/10 text-white text-xs uppercase focus:outline-none focus:border-apple-blue font-mono"
@@ -164,7 +206,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack, onPlayNow }) =
               <thead>
                 <tr className="bg-[#111622] text-apple-gray-400 border-b border-white/10 uppercase tracking-wider text-[10px] font-sans font-bold">
                   <th className="py-3 px-4"># อันดับ</th>
-                  <th className="py-3 px-4">ฉายาผู้เล่น</th>
+                  <th className="py-3 px-4">ฉายา / ชื่อเรียกขาน</th>
                   <th className="py-3 px-4">คะแนน</th>
                   <th className="py-3 px-4">ระดับ (RANK)</th>
                   <th className="py-3 px-4">เวลาที่ใช้</th>
@@ -204,9 +246,16 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack, onPlayNow }) =
                           )}
                         </td>
 
-                        {/* Nickname */}
+                        {/* Callsign / Nickname */}
                         <td className="py-3.5 px-4 font-bold text-white text-sm tracking-wide">
-                          {entry.nickname}
+                          <div className="flex items-center gap-2">
+                            <span>{entry.nickname}</span>
+                            {isTop3 && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-white/10 text-apple-teal border border-white/10 font-mono uppercase">
+                                Top Defender
+                              </span>
+                            )}
+                          </div>
                         </td>
 
                         {/* Score */}
@@ -245,7 +294,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack, onPlayNow }) =
                 ) : (
                   <tr>
                     <td colSpan={7} className="py-12 text-center text-apple-gray-400 font-sans">
-                      ยังไม่มีประวัติคะแนน เป็นคนแรกที่มาพิชิตภารกิจเลย!
+                      {loading ? 'กำลังโหลดข้อมูลอันดับ...' : 'ยังไม่มีประวัติคะแนน เป็นคนแรกที่มาพิชิตภารกิจเลย!'}
                     </td>
                   </tr>
                 )}
@@ -257,8 +306,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onBack, onPlayNow }) =
 
       {/* Footer */}
       <footer className="text-center text-xs text-apple-gray-500 py-6 border-t border-white/5 mt-8 font-sans">
-        🍎 Mac Defender Security Ops • ระบบเก็บบันทึกคะแนนผ่าน SQLite แบบ Real-time
+        🍎 Mac Defender Security Ops • {isSupabaseConfigured() ? 'ระบบเก็บบันทึกคะแนนผ่าน Supabase Realtime Cloud' : 'ระบบเก็บบันทึกคะแนนแบบ Real-time'}
       </footer>
     </div>
   );
 };
+

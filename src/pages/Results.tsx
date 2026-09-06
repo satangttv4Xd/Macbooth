@@ -5,6 +5,7 @@ import { GameState, SecurityRank } from '../types/game.js';
 import { soundEngine } from '../services/soundEngine.js';
 import { SecurityTipsModal } from '../components/modals/SecurityTipsModal.js';
 import { AppleLogo } from '../components/ui/AppleLogo.js';
+import { submitScoreToSupabase } from '../services/supabase.js';
 
 interface ResultsProps {
   gameState: GameState;
@@ -88,12 +89,24 @@ export const Results: React.FC<ResultsProps> = ({
       soundEngine.playBreach();
     }
 
-    // Save to backend database
+    // Save to backend database & Supabase
     const timeSpent = Math.max(1, 300 - gameState.timeRemaining);
     const mins = Math.floor(timeSpent / 60);
     const secs = timeSpent % 60;
     const timeFormatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
+    // 1. Submit to Supabase Realtime Database
+    submitScoreToSupabase({
+      callsign: gameState.nickname,
+      score: gameState.score,
+      rank: gameState.rank || 'B',
+      timeFormatted,
+      timeSeconds: timeSpent,
+      threatsBlocked: gameState.threatsBlocked,
+      difficulty: gameState.difficulty,
+    }).catch(err => console.warn('Could not post score to Supabase:', err));
+
+    // 2. Submit to local backend API
     fetch('/api/leaderboard', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -26,23 +26,19 @@
 - npm `v9+`
 
 ### 1. Installation
-In the project root directory:
 ```bash
-npm run install:all
+npm install
 ```
 
-### 2. Start Development Server
+### 2. Start Game Server (Port 5173 พอร์ตเดียว รันทั้งระบบ)
 ```bash
 npm run dev
 ```
-This automatically starts:
-- **Backend API & WebSockets Server**: `http://localhost:3001`
-- **Frontend Game Application**: `http://localhost:5173`
-- Broadcasts the **LAN IP** (e.g., `http://192.168.1.100:5173`) in the terminal for connecting multiple MacBooks at the booth!
+- รันคำสั่งเดียว ทำงานร่วมกันทั้งหมดบน **`http://localhost:5173`** (ทั้งหน้าเว็บ React, REST API `/api/*`, และ WebSocket Socket.io)
 
 ---
 
-## 🖥️ Exhibition Booth Modes & URLs
+## 🖥️ Exhibition Booth Modes & URLs (Port 5173)
 
 | Mode | URL | Purpose |
 | :--- | :--- | :--- |
