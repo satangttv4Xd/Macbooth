@@ -1,0 +1,27 @@
+{
+  "name": "mac-defender",
+  "version": "1.0.0",
+  "description": "🍎 MAC DEFENDER — SURVIVE THE HACK: Interactive Cybersecurity Booth Game",
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "cybersecurity",
+    "apple",
+    "macbook",
+    "booth-game",
+    "soc",
+    "hacker-simulation",
+    "phishing-awareness"
+  ],
+  "author": "Mac Defender Team",
+  "license": "MIT"
+}

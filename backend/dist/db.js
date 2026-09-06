@@ -1,0 +1,228 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DB_DIR = path.resolve(__dirname, '../../database');
+const DB_FILE = path.join(DB_DIR, 'macdefender_db.json');
+const DEFAULT_SETTINGS = {
+    timeEasy: 420, // 7 minutes
+    timeNormal: 300, // 5 minutes
+    timeNightmare: 180, // 3 minutes
+    soundDefault: true,
+    demoMode: false,
+    scoreMultiplier: 1.0,
+};
+const INITIAL_LEADERBOARD = [
+    {
+        id: 'seed-1',
+        nickname: 'CYBERFOX',
+        score: 9850,
+        rank: 'S',
+        timeFormatted: '03:42',
+        timeSeconds: 222,
+        threatsBlocked: 6,
+        difficulty: 'nightmare',
+        completedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+    },
+    {
+        id: 'seed-2',
+        nickname: 'H4CKER_BANE',
+        score: 9420,
+        rank: 'S',
+        timeFormatted: '04:10',
+        timeSeconds: 250,
+        threatsBlocked: 6,
+        difficulty: 'normal',
+        completedAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+    },
+    {
+        id: 'seed-3',
+        nickname: 'APPLESEC_PRO',
+        score: 9100,
+        rank: 'S',
+        timeFormatted: '04:18',
+        timeSeconds: 258,
+        threatsBlocked: 5,
+        difficulty: 'normal',
+        completedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
+    },
+    {
+        id: 'seed-4',
+        nickname: 'STEVE_SEC',
+        score: 8742,
+        rank: 'A',
+        timeFormatted: '04:32',
+        timeSeconds: 272,
+        threatsBlocked: 5,
+        difficulty: 'easy',
+        completedAt: new Date(Date.now() - 3600000 * 6).toISOString(),
+    },
+    {
+        id: 'seed-5',
+        nickname: 'GUEST_99',
+        score: 8210,
+        rank: 'A',
+        timeFormatted: '04:45',
+        timeSeconds: 285,
+        threatsBlocked: 4,
+        difficulty: 'normal',
+        completedAt: new Date(Date.now() - 3600000 * 8).toISOString(),
+    },
+    {
+        id: 'seed-6',
+        nickname: 'MAC_NINJA',
+        score: 7650,
+        rank: 'A',
+        timeFormatted: '04:55',
+        timeSeconds: 295,
+        threatsBlocked: 4,
+        difficulty: 'easy',
+        completedAt: new Date(Date.now() - 3600000 * 10).toISOString(),
+    },
+    {
+        id: 'seed-7',
+        nickname: 'TERMINAL_01',
+        score: 6420,
+        rank: 'B',
+        timeFormatted: '05:12',
+        timeSeconds: 312,
+        threatsBlocked: 3,
+        difficulty: 'normal',
+        completedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
+    }
+];
+class StorageEngine {
+    data;
+    constructor() {
+        this.data = this.load();
+    }
+    load() {
+        try {
+            if (!fs.existsSync(DB_DIR)) {
+                fs.mkdirSync(DB_DIR, { recursive: true });
+            }
+            if (fs.existsSync(DB_FILE)) {
+                const raw = fs.readFileSync(DB_FILE, 'utf-8');
+                return JSON.parse(raw);
+            }
+        }
+        catch (e) {
+            console.warn('⚠️ Could not load database file, initializing defaults:', e);
+        }
+        const initial = {
+            leaderboard: INITIAL_LEADERBOARD,
+            sessions: [],
+            settings: DEFAULT_SETTINGS,
+            metrics: {
+                totalStarts: 127,
+                totalCompletions: 89,
+                totalCompromised: 38,
+                missionStats: {
+                    1: { correct: 110, wrong: 17 },
+                    2: { correct: 104, wrong: 23 },
+                    3: { correct: 95, wrong: 32 },
+                    4: { correct: 88, wrong: 39 },
+                    5: { correct: 76, wrong: 51 },
+                    6: { correct: 89, wrong: 38 },
+                },
+            },
+        };
+        this.save(initial);
+        return initial;
+    }
+    save(dataToSave) {
+        try {
+            if (!fs.existsSync(DB_DIR)) {
+                fs.mkdirSync(DB_DIR, { recursive: true });
+            }
+            const data = dataToSave || this.data;
+            fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+        }
+        catch (e) {
+            console.error('❌ Failed to save database file:', e);
+        }
+    }
+    // --- Leaderboard Methods ---
+    getLeaderboard(limit = 50) {
+        return [...this.data.leaderboard]
+            .sort((a, b) => b.score - a.score || a.timeSeconds - b.timeSeconds)
+            .slice(0, limit);
+    }
+    addLeaderboardEntry(entry) {
+        const newEntry = {
+            ...entry,
+            id: 'entry-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
+            completedAt: new Date().toISOString(),
+        };
+        this.data.leaderboard.push(newEntry);
+        this.data.leaderboard.sort((a, b) => b.score - a.score || a.timeSeconds - b.timeSeconds);
+        this.data.metrics.totalCompletions += 1;
+        this.save();
+        return newEntry;
+    }
+    resetLeaderboard() {
+        this.data.leaderboard = [];
+        this.save();
+    }
+    deleteLeaderboardEntry(id) {
+        const initialLen = this.data.leaderboard.length;
+        this.data.leaderboard = this.data.leaderboard.filter(e => e.id !== id);
+        if (this.data.leaderboard.length !== initialLen) {
+            this.save();
+            return true;
+        }
+        return false;
+    }
+    // --- Session & Metrics Methods ---
+    recordGameStart(difficulty) {
+        this.data.metrics.totalStarts += 1;
+        this.save();
+    }
+    recordMissionOutcome(missionIndex, isCorrect) {
+        if (!this.data.metrics.missionStats[missionIndex]) {
+            this.data.metrics.missionStats[missionIndex] = { correct: 0, wrong: 0 };
+        }
+        if (isCorrect) {
+            this.data.metrics.missionStats[missionIndex].correct += 1;
+        }
+        else {
+            this.data.metrics.missionStats[missionIndex].wrong += 1;
+        }
+        this.save();
+    }
+    getStats() {
+        const list = this.data.leaderboard;
+        const totalScore = list.reduce((acc, curr) => acc + curr.score, 0);
+        const avgScore = list.length > 0 ? Math.round(totalScore / list.length) : 0;
+        const totalSecs = list.reduce((acc, curr) => acc + curr.timeSeconds, 0);
+        const avgSecs = list.length > 0 ? Math.round(totalSecs / list.length) : 0;
+        const mins = Math.floor(avgSecs / 60);
+        const secs = avgSecs % 60;
+        const avgTimeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        const top = list[0];
+        const difficultyDist = {
+            easy: list.filter(e => e.difficulty === 'easy').length,
+            normal: list.filter(e => e.difficulty === 'normal').length,
+            nightmare: list.filter(e => e.difficulty === 'nightmare').length,
+        };
+        return {
+            playersToday: this.data.metrics.totalStarts,
+            completed: this.data.metrics.totalCompletions,
+            averageScore: avgScore,
+            averageTime: avgTimeStr,
+            topPlayer: top ? top.nickname : 'None',
+            topScore: top ? top.score : 0,
+            difficultyDistribution: difficultyDist,
+        };
+    }
+    getSettings() {
+        return { ...this.data.settings };
+    }
+    updateSettings(newSettings) {
+        this.data.settings = { ...this.data.settings, ...newSettings };
+        this.save();
+        return this.data.settings;
+    }
+}
+export const db = new StorageEngine();

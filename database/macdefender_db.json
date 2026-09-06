@@ -1,0 +1,288 @@
+{
+  "leaderboard": [
+    {
+      "nickname": "SILICON_WARRIOR",
+      "score": 30750,
+      "rank": "S",
+      "timeFormatted": "02:28",
+      "timeSeconds": 148,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "id": "entry-1788498782818-yoqxa",
+      "completedAt": "2026-09-04T05:13:02.818Z"
+    },
+    {
+      "nickname": "SILICON_WARRIOR",
+      "score": 30750,
+      "rank": "S",
+      "timeFormatted": "02:28",
+      "timeSeconds": 148,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "id": "entry-1788498782819-luda4",
+      "completedAt": "2026-09-04T05:13:02.819Z"
+    },
+    {
+      "nickname": "BYTE_KNIGHT_33",
+      "score": 30250,
+      "rank": "S",
+      "timeFormatted": "03:16",
+      "timeSeconds": 196,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "id": "entry-1788495030183-stcu1",
+      "completedAt": "2026-09-04T04:10:30.183Z"
+    },
+    {
+      "nickname": "BYTE_KNIGHT_33",
+      "score": 30250,
+      "rank": "S",
+      "timeFormatted": "03:16",
+      "timeSeconds": 196,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "id": "entry-1788495030187-mlu8t",
+      "completedAt": "2026-09-04T04:10:30.187Z"
+    },
+    {
+      "nickname": "H4CKER_BANE",
+      "score": 21250,
+      "rank": "S",
+      "timeFormatted": "02:35",
+      "timeSeconds": 155,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "id": "entry-1788336029611-xqw8g",
+      "completedAt": "2026-09-02T08:00:29.611Z"
+    },
+    {
+      "nickname": "H4CKER_BANE",
+      "score": 21250,
+      "rank": "S",
+      "timeFormatted": "02:35",
+      "timeSeconds": 155,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "id": "entry-1788336029614-unu7z",
+      "completedAt": "2026-09-02T08:00:29.614Z"
+    },
+    {
+      "nickname": "CYBERFOX",
+      "score": 20750,
+      "rank": "S",
+      "timeFormatted": "00:01",
+      "timeSeconds": 1,
+      "threatsBlocked": 6,
+      "difficulty": "easy",
+      "id": "entry-1788334632601-pqd7t",
+      "completedAt": "2026-09-02T07:37:12.601Z"
+    },
+    {
+      "nickname": "CYBERFOX",
+      "score": 20750,
+      "rank": "S",
+      "timeFormatted": "00:01",
+      "timeSeconds": 1,
+      "threatsBlocked": 6,
+      "difficulty": "easy",
+      "id": "entry-1788334632633-cb6b5",
+      "completedAt": "2026-09-02T07:37:12.633Z"
+    },
+    {
+      "nickname": "CYBER_HERO",
+      "score": 9950,
+      "rank": "S",
+      "timeFormatted": "03:12",
+      "timeSeconds": 192,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "id": "entry-1788329941503-l51km",
+      "completedAt": "2026-09-02T06:19:01.503Z"
+    },
+    {
+      "id": "seed-1",
+      "nickname": "CYBERFOX",
+      "score": 9850,
+      "rank": "S",
+      "timeFormatted": "03:42",
+      "timeSeconds": 222,
+      "threatsBlocked": 6,
+      "difficulty": "nightmare",
+      "completedAt": "2026-09-02T04:17:52.266Z"
+    },
+    {
+      "id": "seed-2",
+      "nickname": "H4CKER_BANE",
+      "score": 9420,
+      "rank": "S",
+      "timeFormatted": "04:10",
+      "timeSeconds": 250,
+      "threatsBlocked": 6,
+      "difficulty": "normal",
+      "completedAt": "2026-09-02T02:17:52.267Z"
+    },
+    {
+      "id": "seed-3",
+      "nickname": "APPLESEC_PRO",
+      "score": 9100,
+      "rank": "S",
+      "timeFormatted": "04:18",
+      "timeSeconds": 258,
+      "threatsBlocked": 5,
+      "difficulty": "normal",
+      "completedAt": "2026-09-02T01:17:52.267Z"
+    },
+    {
+      "id": "seed-4",
+      "nickname": "STEVE_SEC",
+      "score": 8742,
+      "rank": "A",
+      "timeFormatted": "04:32",
+      "timeSeconds": 272,
+      "threatsBlocked": 5,
+      "difficulty": "easy",
+      "completedAt": "2026-09-02T00:17:52.267Z"
+    },
+    {
+      "id": "seed-5",
+      "nickname": "GUEST_99",
+      "score": 8210,
+      "rank": "A",
+      "timeFormatted": "04:45",
+      "timeSeconds": 285,
+      "threatsBlocked": 4,
+      "difficulty": "normal",
+      "completedAt": "2026-09-01T22:17:52.267Z"
+    },
+    {
+      "id": "seed-6",
+      "nickname": "MAC_NINJA",
+      "score": 7650,
+      "rank": "A",
+      "timeFormatted": "04:55",
+      "timeSeconds": 295,
+      "threatsBlocked": 4,
+      "difficulty": "easy",
+      "completedAt": "2026-09-01T20:17:52.267Z"
+    },
+    {
+      "nickname": "QUANTUM_GUARD",
+      "score": 6750,
+      "rank": "B",
+      "timeFormatted": "00:17",
+      "timeSeconds": 17,
+      "threatsBlocked": 3,
+      "difficulty": "easy",
+      "id": "entry-1788494925808-8hgby",
+      "completedAt": "2026-09-04T04:08:45.808Z"
+    },
+    {
+      "nickname": "QUANTUM_GUARD",
+      "score": 6750,
+      "rank": "B",
+      "timeFormatted": "00:17",
+      "timeSeconds": 17,
+      "threatsBlocked": 3,
+      "difficulty": "easy",
+      "id": "entry-1788494925854-hz0oo",
+      "completedAt": "2026-09-04T04:08:45.855Z"
+    },
+    {
+      "id": "seed-7",
+      "nickname": "TERMINAL_01",
+      "score": 6420,
+      "rank": "B",
+      "timeFormatted": "05:12",
+      "timeSeconds": 312,
+      "threatsBlocked": 3,
+      "difficulty": "normal",
+      "completedAt": "2026-09-01T18:17:52.267Z"
+    },
+    {
+      "nickname": "QUANTUM_GUARD",
+      "score": 1000,
+      "rank": "C",
+      "timeFormatted": "03:24",
+      "timeSeconds": 204,
+      "threatsBlocked": 0,
+      "difficulty": "nightmare",
+      "id": "entry-1788495360952-2h0y1",
+      "completedAt": "2026-09-04T04:16:00.952Z"
+    },
+    {
+      "nickname": "QUANTUM_GUARD",
+      "score": 1000,
+      "rank": "C",
+      "timeFormatted": "03:24",
+      "timeSeconds": 204,
+      "threatsBlocked": 0,
+      "difficulty": "nightmare",
+      "id": "entry-1788495360964-511rk",
+      "completedAt": "2026-09-04T04:16:00.964Z"
+    }
+  ],
+  "sessions": [],
+  "settings": {
+    "timeEasy": 420,
+    "timeNormal": 300,
+    "timeNightmare": 180,
+    "soundDefault": true,
+    "demoMode": false,
+    "scoreMultiplier": 1
+  },
+  "metrics": {
+    "totalStarts": 127,
+    "totalCompletions": 102,
+    "totalCompromised": 38,
+    "missionStats": {
+      "1": {
+        "correct": 114,
+        "wrong": 21
+      },
+      "2": {
+        "correct": 108,
+        "wrong": 23
+      },
+      "3": {
+        "correct": 98,
+        "wrong": 33
+      },
+      "4": {
+        "correct": 92,
+        "wrong": 39
+      },
+      "5": {
+        "correct": 80,
+        "wrong": 51
+      },
+      "6": {
+        "correct": 92,
+        "wrong": 39
+      },
+      "401": {
+        "correct": 1,
+        "wrong": 0
+      },
+      "402": {
+        "correct": 1,
+        "wrong": 1
+      },
+      "403": {
+        "correct": 2,
+        "wrong": 0
+      },
+      "404": {
+        "correct": 1,
+        "wrong": 0
+      },
+      "405": {
+        "correct": 1,
+        "wrong": 0
+      },
+      "406": {
+        "correct": 1,
+        "wrong": 0
+      }
+    }
+  }
+}
